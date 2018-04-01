@@ -1,6 +1,7 @@
 from lxml import etree
 import re
 
+
 class Root:
     def __init__(self, root_obj):
         self._root = root_obj
