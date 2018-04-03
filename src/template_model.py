@@ -2,6 +2,9 @@ import re
 import xml.etree.ElementTree as eT
 from enum import Enum
 
+XML_FILE_NAME = 'ic-import.xsd'
+OUTPUT_FILE_NAME = 'output_xml.xsd'
+
 
 class ESimpleType(Enum):
     """Enum for simpleType`s"""
@@ -182,29 +185,30 @@ class EElement(Enum):
 
 class Parser:
     def __init__(self):
-        self._output_file_name = 'test.xsd'
-        self._source_file_name = 'ic-import.xsd'
-        self._tree = eT.parse(self._output_file_name)
+        self.__delete_xs(XML_FILE_NAME)
+        self._tree = eT.parse(OUTPUT_FILE_NAME)
         self._root = self._tree.getroot()
-        self._parse_xml(self._source_file_name)
 
-    def get_root_obj(self, file_name):
+    @staticmethod
+    def get_root_obj(file_name):
         tree = eT.parse(file_name)
         root = tree.getroot()
         return root
 
-    def get_tree(self, file_name):
+    @staticmethod
+    def get_tree(file_name):
         tree = eT.parse(file_name)
         return tree
 
-    def _parse_xml(self, xml_file):
+    @staticmethod
+    def __delete_xs(xml_file):
         with open(xml_file, encoding='utf-8') as f:
             xml = f.read()
 
         # delete unnecessary xs schema
         xml_file = re.sub('xs:', '', xml)
 
-        file = open(self._output_file_name, 'w', encoding='utf-8')
+        file = open(OUTPUT_FILE_NAME, 'w', encoding='utf-8')
         file.write(xml_file)
         file.close()
 
