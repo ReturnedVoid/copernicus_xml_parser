@@ -1,6 +1,6 @@
-from schema_parser import Parser, EEnumeration, ESimpleType, EElement
+from template_model import Parser, EEnumeration, ESimpleType, EElement
 from lxml import etree
-from issue_parser import Root, Issue
+from issue_model import Root, Issue
 import xml.etree.ElementTree as eT
 import os
 import sys
