@@ -4,6 +4,8 @@ from enum import Enum
 
 
 class ESimpleType(Enum):
+    """Enum for simpleType`s"""
+
     roleType = 'roleType'
     articleType = 'articleType'
     areaScienceType = 'areaScienceType'
@@ -15,6 +17,8 @@ class ESimpleType(Enum):
 
 
 class EEnumeration(Enum):
+    """Enum for enumeration`s"""
+
     LEAD_AUTHOR = 'LEAD_AUTHOR'
     AUTHOR = 'AUTHOR'
     RESEARCH_PROJECT = 'RESEARCH_PROJECT'
@@ -134,6 +138,48 @@ class EEnumeration(Enum):
         return self.value
 
 
+class EElement(Enum):
+    """Enum for elements`s"""
+
+    JOURNAL = 'journal'
+    ISSUE = 'issue'
+    ARTICLE = 'article'
+    TYPE = 'type'
+    LANGUAGE_VERSION = 'languageVersion'
+    TITLE = 'title'
+    ABSTRACT = 'abstract'
+    PDF_FILE_URL = 'pdfFileUrl'
+    PUBLICATION_DATE = 'publicationDate'
+    REGISTRATION_DATE = 'registrationDate'
+    PAGE_FROM = 'pageFrom'
+    PAGE_TO = 'pageTo'
+    DOI = 'doi'
+    KEYWORDS = 'keywords'
+    KEYWORD = 'keyword'
+    AUTHORS = 'authors'
+    AUTHOR = 'author'
+    NAME = 'name'
+    NAME2 = 'name2'
+    SURNAME = 'surname'
+    EMAIL = 'email'
+    POLISH_AFFILIATION = 'polishAffiliation'
+    ORDER = 'order'
+    INSTITUTE_AFFILIATION = 'instituteAffiliation'
+    DEPARTMENT_AFFILIATION = 'departmentAffiliation'
+    SUBJECT_AFFILIATION = 'subjectAffiliation'
+    ROLE = 'role'
+    REFERENCES = 'references'
+    REFERENCE = 'reference'
+    UNPARSED_CONTENT = 'unparsedContent'
+    DISCIPLINE_SCIENCES = 'disciplineSciences'
+    AREA_SCIENCE = 'areaScience'
+    FIELD_SCIENCE = 'fieldScience'
+    DISCIPLINE_SCIENCE = 'disciplineScience'
+
+    def __str__(self):
+        return self.value
+
+
 class Parser:
     def __init__(self):
         self._output_file_name = 'test.xsd'
@@ -156,22 +202,40 @@ class Parser:
         self._tree = eT.parse(self._output_file_name)
         self._root = self._tree.getroot()
 
-    def get_doc_text(self, simple_type_name, enumeration_value):
-        simple_type = self._root.find('.//simpleType[@name="{}"]'.format(simple_type_name))
-        enumeration = simple_type.find('.//enumeration[@value="{}"]'.format(enumeration_value))
-        annotation = enumeration.getchildren()[0]
-        doc = annotation.getchildren()[0]
+    def get_doc_text(self, simple_type_name, enumeration_value=None):
+        if type(simple_type_name) is ESimpleType:
+            simple_type = self._root.find('.//simpleType[@name="{}"]'.format(simple_type_name))
+            enumeration = simple_type.find('.//enumeration[@value="{}"]'.format(enumeration_value))
+            annotation = enumeration.getchildren()[0]
+            doc = annotation.getchildren()[0]
+            return doc.text
+        else:
+            element = self._root.find('./element')
+            req_element = element.find('.//element[@name="{}"]'.format(simple_type_name))
+            doc = req_element.find('.//documentation')
+            return doc.text
+
+    def set_doc_text(self, simple_type_name, enumeration_value=None, text=''):
+        if type(simple_type_name) is ESimpleType:
+            simple_type = self._root.find('.//simpleType[@name="{}"]'.format(simple_type_name))
+            enumeration = simple_type.find('.//enumeration[@value="{}"]'.format(enumeration_value))
+            annotation = enumeration.getchildren()[0]
+            doc = annotation.getchildren()[0]
+            doc.text = text
+        else:
+            element = self._root.find('./element')
+            req_element = element.find('.//element[@name="{}"]'.format(simple_type_name))
+            doc = req_element.find('.//documentation')
+            doc.text = text
+
+    def get_element_annotation(self):
+        element = self._root.find('./element[@name="ici-import"]')
+        annotation = element.find('.//annotation')
+        doc = annotation.find('.//documentation')
         return doc.text
 
-    def set_doc_text(self, simple_type_name, enumeration_value, text):
-        simple_type = self._root.find('.//simpleType[@name="{}"]'.format(simple_type_name))
-        enumeration = simple_type.find('.//enumeration[@value="{}"]'.format(enumeration_value))
-        annotation = enumeration.getchildren()[0]
-        doc = annotation.getchildren()[0]
-        doc.text = text
-
-    def write_xml_to_file(self):
-        self._tree.write(self._output_file_name)
+    def write_xml_to_file(self, file_name):
+        self._tree.write(file_name)
 
 
 class Documentation:
@@ -273,10 +337,3 @@ class Sequence:
 
     def get_elements(self):
         return [Element(obj) for obj in self._elements]
-
-
-if __name__ == "__main__":
-    parser = Parser()
-    text = parser.get_doc_text(ESimpleType.disciplineScienceType, EEnumeration.NUMBER7)
-    print(text)
-
