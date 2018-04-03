@@ -184,47 +184,53 @@ class Parser:
     def __init__(self):
         self._output_file_name = 'test.xsd'
         self._source_file_name = 'ic-import.xsd'
-        self._tree = None
-        self._root = None
+        self._tree = eT.parse(self._output_file_name)
+        self._root = self._tree.getroot()
         self._parse_xml(self._source_file_name)
+
+    def get_root_obj(self, file_name):
+        tree = eT.parse(file_name)
+        root = tree.getroot()
+        return root
+
+    def get_tree(self, file_name):
+        tree = eT.parse(file_name)
+        return tree
 
     def _parse_xml(self, xml_file):
         with open(xml_file, encoding='utf-8') as f:
             xml = f.read()
 
-        xml_file = re.sub('xmlns:xs="http://www.w3.org/2001/XMLSchema" ', '', xml)
+        # delete unnecessary xs schema
         xml_file = re.sub('xs:', '', xml)
 
         file = open(self._output_file_name, 'w', encoding='utf-8')
         file.write(xml_file)
         file.close()
 
-        self._tree = eT.parse(self._output_file_name)
-        self._root = self._tree.getroot()
-
-    def get_doc_text(self, simple_type_name, enumeration_value=None):
-        if type(simple_type_name) is ESimpleType:
-            simple_type = self._root.find('.//simpleType[@name="{}"]'.format(simple_type_name))
+    def get_doc_text(self, tag, enumeration_value=None):
+        if type(tag) is ESimpleType:
+            simple_type = self._root.find('.//simpleType[@name="{}"]'.format(tag))
             enumeration = simple_type.find('.//enumeration[@value="{}"]'.format(enumeration_value))
-            annotation = enumeration.getchildren()[0]
-            doc = annotation.getchildren()[0]
+            annotation = enumeration.find('.//annotation')
+            doc = annotation.find('.//documentation')
             return doc.text
-        else:
+        else:  # if its EElement
             element = self._root.find('./element')
-            req_element = element.find('.//element[@name="{}"]'.format(simple_type_name))
+            req_element = element.find('.//element[@name="{}"]'.format(tag))
             doc = req_element.find('.//documentation')
             return doc.text
 
-    def set_doc_text(self, simple_type_name, enumeration_value=None, text=''):
-        if type(simple_type_name) is ESimpleType:
-            simple_type = self._root.find('.//simpleType[@name="{}"]'.format(simple_type_name))
+    def set_doc_text(self, tag, enumeration_value=None, text=''):
+        if type(tag) is ESimpleType:
+            simple_type = self._root.find('.//simpleType[@name="{}"]'.format(tag))
             enumeration = simple_type.find('.//enumeration[@value="{}"]'.format(enumeration_value))
             annotation = enumeration.getchildren()[0]
             doc = annotation.getchildren()[0]
             doc.text = text
         else:
             element = self._root.find('./element')
-            req_element = element.find('.//element[@name="{}"]'.format(simple_type_name))
+            req_element = element.find('.//element[@name="{}"]'.format(tag))
             doc = req_element.find('.//documentation')
             doc.text = text
 
@@ -236,104 +242,3 @@ class Parser:
 
     def write_xml_to_file(self, file_name):
         self._tree.write(file_name)
-
-
-class Documentation:
-    def __init__(self, doc_obj):
-        self._doc = doc_obj
-        self._text = self._doc.text
-
-    def get_text(self):
-        return self._text
-
-    def set_text(self, text):
-        self._doc.text = text
-
-
-class Annotation:
-    def __init__(self, ann_obj):
-        self._annotation = ann_obj
-        self._documentations = self._annotation.findall('documentation')
-
-    def get_documentations(self):
-        return [Documentation(obj) for obj in self._documentations]
-
-
-class Enumeration:
-    def __init__(self, enum_obj):
-        self._enumeration = enum_obj
-        self._annotations = self._enumeration.findall('annotation')
-
-    def get_annotations(self):
-        return [Annotation(obj) for obj in self._annotations]
-
-
-class Restriction:
-    def __init__(self, restr_obj):
-        self._restriction = restr_obj
-        self._enumerations = self._restriction.findall('enumeration')
-
-    def get_enumerations(self):
-        return [Enumeration(obj) for obj in self._enumerations]
-
-
-class SimpleType:
-    def __init__(self, simple_type_obj):
-        self._simple_type = simple_type_obj
-        self._restrictions = self._simple_type.findall('restriction')
-
-    def get_restrictions(self):
-        return [Restriction(obj) for obj in self._restrictions]
-
-
-class Root:
-    def __init__(self, root_obj):
-        self._root = root_obj
-        self._schemas = self._root.findall('schema')
-
-    def get_schemas(self):
-        return [Schema(obj) for obj in self._schemas]
-
-
-class Schema:
-    def __init__(self, schema_obj):
-        self._schema = schema_obj
-        self._objects = self._schema.findall('simpleType')
-        self._els = self._schema.findall('element')
-
-    def get_simple_types(self):
-        return [SimpleType(obj) for obj in self._objects]
-
-    def get_elements(self):
-        return [Element(obj) for obj in self._els]
-
-
-class Element:
-    def __init__(self, el_obj):
-        self._element = el_obj
-        self._annotations = self._element.findall('annotation')
-        self._complex_types = self._element.findall('complexType')
-
-    def get_annotations(self):
-        return [Annotation(obj) for obj in self._annotations]
-
-    def get_complex_types(self):
-        return [ComplexType(obj) for obj in self._complex_types]
-
-
-class ComplexType:
-    def __init__(self, ct_obj):
-        self._complex_type = ct_obj
-        self._sequences = self._complex_type.findall('sequence')
-
-    def get_sequences(self):
-        return [Sequence(obj) for obj in self._sequences]
-
-
-class Sequence:
-    def __init__(self, seq_obj):
-        self._sequence = seq_obj
-        self._elements = self._sequence.findall('element')
-
-    def get_elements(self):
-        return [Element(obj) for obj in self._elements]
