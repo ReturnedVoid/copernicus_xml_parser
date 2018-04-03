@@ -1,7 +1,3 @@
-from lxml import etree
-import re
-
-
 class Root:
     def __init__(self, root_obj):
         self._root = root_obj
@@ -156,56 +152,3 @@ class Author:
 
     def get_ukr_affiliation(self):
         return self._affiliations[2].text
-
-
-def parse_xml(xml_file):
-    write_to_file = []
-
-    with open(xml_file, encoding='utf-8') as fobj:
-        xml_file = fobj.read()
-
-    root = bytes(bytearray(xml_file, encoding='utf-8'))
-    xml = etree.XML(root)
-    root = Root(xml)
-
-    for i in range(0, len(root.get_issues())):
-        issue = root.get_issues()[i]
-        write_to_file.append('\nIssue {}\n'.format(i + 1))
-        write_to_file.append('Volume: {0}\nNumber: {1}\nData published: {2}\nYear:{3}\nOpen access: {4}\n\n'
-                             .format(issue.get_volume(), issue.get_number(), issue.get_date_published(),
-                                     issue.get_year(), issue.get_open_access()))
-
-        for j in range(0, len(issue.get_sections())):
-            section = issue.get_sections()[j]
-            write_to_file.append('\nSection {}\n'.format(j + 1))
-            write_to_file.append('Eng. title: {0}\nRus. title: {1}\nUrk. title: {2}\n'
-                                 .format(section.get_eng_title(), section.get_rus_title(), section.get_ukr_title()) +
-                                 'Eng. abbrev : {0}\nRus. abbrev: {1}\nUkr. abbrev: {2}\n\n'
-                                 .format(section.get_eng_abbrev(), section.get_rus_abbrev(), section.get_ukr_abbrev())
-                                 )
-            for k in range(0, len(section.get_articles())):
-                article = section.get_articles()[k]
-                write_to_file.append('\nArticle {}\n'.format(k + 1))
-                write_to_file.append('Eng. title: {0}\nRus. title: {1}\nUrk. title: {2}\n'
-                                     .format(article.get_eng_title(), article.get_rus_title(),
-                                             article.get_ukr_title()) +
-                                     'Pages: {0}\nDate published: {1}\nId: {2}\nAbstract:{3}\nIndexing:{4}\nGalley: {5}\n\n'
-                                     .format(article.get_pages(), article.get_date_published(), article.get_id(),
-                                             article.get_abstracts()[0].text, article.get_indexing(), article.get_galley())
-                                     )
-                for z in range(0, len(article.get_authors())):
-                    author = article.get_authors()[z]
-                    write_to_file.append('\nAuthor {}\n'.format(z + 1))
-                    write_to_file.append('Name: {0}{1} {2}\n'
-                                         .format(author.get_first_name(), author.get_middle_name(),
-                                                 author.get_last_name()) +
-                                         'Email: {0}\nCountry: {1}\nBiography: {2}\n'
-                                         .format(author.get_email(), author.get_country(), author.get_biography()[1].text))
-
-                    str_to_file = re.sub('<.+?>', ' ', ''.join(write_to_file) )
-                    with open(file='output.txt', mode='w', encoding='utf-8') as output_file:
-                        output_file.write(str_to_file)
-
-
-if __name__ == "__main__":
-    parse_xml("issues.xml")
