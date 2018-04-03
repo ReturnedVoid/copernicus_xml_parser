@@ -1,20 +1,17 @@
 from template_model import Parser, EEnumeration, ESimpleType, EElement
-from issue_model import Root, Issue
+from issue_model import Root
 import os
 from issue_model import XML_FILE_NAME as ISSUE_FILE
 
+OUTPUT_DIR_NAME = 'outputs'
 
-def make_output_dir():
-    """Create dir for outputs"""
 
+def fill_template_xml(xml_file):
+    # make dir for output files
     try:
-        os.mkdir('outputs')
+        os.mkdir(OUTPUT_DIR_NAME)
     except FileExistsError:
-        print('dir already exists')
-
-
-def parse_xml(xml_file):
-    make_output_dir()
+        print('Output directory already exists.')
 
     parser = Parser()
     root = Root(Parser.get_tree(xml_file))
@@ -48,4 +45,4 @@ def parse_xml(xml_file):
 
 
 if __name__ == "__main__":
-    parse_xml(ISSUE_FILE)
+    fill_template_xml(ISSUE_FILE)
