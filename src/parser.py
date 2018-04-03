@@ -1,4 +1,4 @@
-from template_model import Parser, EEnumeration, ESimpleType, EElement
+from template_model import Parser, EEnumeration, ESimpleType, EElement, TEMP_FILE_NAME
 from issue_model import Root
 import os
 from issue_model import XML_FILE_NAME as ISSUE_FILE
@@ -42,6 +42,12 @@ def fill_template_xml(xml_file):
 
             file_name = 'outputs/output_num{}.xsd'.format(j)
             parser.write_xml_to_file(file_name)
+
+    # Delete unnecessary temp file
+    try:
+        os.remove(TEMP_FILE_NAME)
+    except FileNotFoundError:
+        print('Temp file was not found.')
 
 
 if __name__ == "__main__":
