@@ -213,30 +213,56 @@ class Parser:
         file.close()
 
     def get_doc_text(self, tag, enumeration_value=None):
-        if type(tag) is ESimpleType:
-            simple_type = self._root.find('.//simpleType[@name="{}"]'.format(tag))
-            enumeration = simple_type.find('.//enumeration[@value="{}"]'.format(enumeration_value))
-            annotation = enumeration.find('.//annotation')
-            doc = annotation.find('.//documentation')
-            return doc.text
-        else:  # if its EElement
-            element = self._root.find('./element')
-            req_element = element.find('.//element[@name="{}"]'.format(tag))
-            doc = req_element.find('.//documentation')
-            return doc.text
+        """Returns documentation of given fragment
+
+        Args:
+            tag (ESimpleType|EElement): simpleType or element tag in which doc must be found.
+            enumeration_value (EEnumeration): enumeration tag in which doc must be found.
+
+        Returns:
+            str: documentation text
+
+        Raises:
+            AttributeError: if doc in given fragment was not found."""
+        try:
+            if type(tag) is ESimpleType:
+                simple_type = self._root.find('.//simpleType[@name="{}"]'.format(tag))
+                enumeration = simple_type.find('.//enumeration[@value="{}"]'.format(enumeration_value))
+                annotation = enumeration.find('.//annotation')
+                doc = annotation.find('.//documentation')
+                return doc.text
+            else:  # if its EElement
+                element = self._root.find('./element')
+                req_element = element.find('.//element[@name="{}"]'.format(tag))
+                doc = req_element.find('.//documentation')
+                return doc.text
+        except AttributeError:
+            print('Check file`s fragment, doc was not found')
 
     def set_doc_text(self, tag, enumeration_value=None, text=''):
-        if type(tag) is ESimpleType:
-            simple_type = self._root.find('.//simpleType[@name="{}"]'.format(tag))
-            enumeration = simple_type.find('.//enumeration[@value="{}"]'.format(enumeration_value))
-            annotation = enumeration.getchildren()[0]
-            doc = annotation.getchildren()[0]
-            doc.text = text
-        else:
-            element = self._root.find('./element')
-            req_element = element.find('.//element[@name="{}"]'.format(tag))
-            doc = req_element.find('.//documentation')
-            doc.text = text
+        """Sets text to given fragment`s documentation
+
+        Args:
+            tag (ESimpleType|EElement): simpleType or element tag in which text must be set.
+            enumeration_value (EEnumeration): enumeration tag in which text must be set.
+            text (str): text for setting to documentation fragment.
+
+        Raises:
+            AttributeError: if doc in given fragment was not found."""
+        try:
+            if type(tag) is ESimpleType:
+                simple_type = self._root.find('.//simpleType[@name="{}"]'.format(tag))
+                enumeration = simple_type.find('.//enumeration[@value="{}"]'.format(enumeration_value))
+                annotation = enumeration.getchildren()[0]
+                doc = annotation.getchildren()[0]
+                doc.text = text
+            else:
+                element = self._root.find('./element')
+                req_element = element.find('.//element[@name="{}"]'.format(tag))
+                doc = req_element.find('.//documentation')
+                doc.text = text
+        except AttributeError:
+            print('Check file`s fragment, doc was not found')
 
     def get_element_annotation(self):
         element = self._root.find('./element[@name="ici-import"]')
