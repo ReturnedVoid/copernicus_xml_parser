@@ -1,7 +1,6 @@
 from src.template_model import Parser, EElement, TEMP_FILE_NAME
 from src.issue_model import Root
 import os
-from src.issue_model import XML_FILE_NAME as ISSUE_FILE
 
 OUTPUT_DIR_NAME = 'outputs'
 
@@ -48,7 +47,3 @@ def fill_template_xml(xml_file):
         os.remove(TEMP_FILE_NAME)
     except FileNotFoundError:
         print('Temp file was not found.')
-
-
-if __name__ == "__main__":
-    fill_template_xml(ISSUE_FILE)
