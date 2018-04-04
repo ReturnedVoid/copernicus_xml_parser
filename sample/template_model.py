@@ -184,9 +184,9 @@ class EElement(Enum):
 
 
 class Parser:
-    def __init__(self):
+    def __init__(self, file=TEMP_FILE_NAME):
         self.__delete_xs(XML_FILE_NAME)
-        self._tree = eT.parse(TEMP_FILE_NAME)
+        self._tree = eT.parse(file)
         self._root = self._tree.getroot()
 
     @staticmethod
