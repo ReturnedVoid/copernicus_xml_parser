@@ -1,7 +1,7 @@
-from template_model import Parser, EElement, TEMP_FILE_NAME
-from issue_model import Root
+from src.template_model import Parser, EElement, TEMP_FILE_NAME
+from src.issue_model import Root
 import os
-from issue_model import XML_FILE_NAME as ISSUE_FILE
+from src.issue_model import XML_FILE_NAME as ISSUE_FILE
 
 OUTPUT_DIR_NAME = 'outputs'
 
