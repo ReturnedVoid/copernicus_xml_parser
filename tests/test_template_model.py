@@ -1,6 +1,8 @@
-from sample.template_model import *
-from sample.parser import *
-from sample.issue_model import *
+import sys,os
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+from src.template_model import *
+from src.issue_model import *
+from src.copernicus_parser import fill_template_xml
 
 
 def test_get_doc_with_valid_args():
@@ -25,7 +27,7 @@ def test_get_element_annotation():
 
 def test_insertion():
     expected = 'Kherson National Technical University'
-    fill_template_xml(ISSUE_FILE)
+    fill_template_xml(XML_FILE_NAME)
 
     parser = Parser('../outputs/output_num0.xsd')
     text = parser.get_doc_text(EElement.TYPE)
