@@ -4,7 +4,7 @@ import os
 import sys
 from sample.issue_model import XML_FILE_NAME as ISSUE_FILE
 
-OUTPUT_DIR_NAME = 'outputs'
+OUTPUT_DIR_NAME = '../outputs'
 
 
 def fill_template_xml(xml_file):
@@ -41,7 +41,7 @@ def fill_template_xml(xml_file):
                     affiliation = author.get_eng_affiliation()
                     parser.set_doc_text(EElement.TYPE, text=affiliation)
 
-            file_name = 'outputs/output_num{}.xsd'.format(j)
+            file_name = '../outputs/output_num{}.xsd'.format(j)
             parser.write_xml_to_file(file_name)
 
     # Delete unnecessary temp file

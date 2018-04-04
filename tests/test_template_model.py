@@ -27,6 +27,6 @@ def test_insertion():
     expected = 'Kherson National Technical University'
     fill_template_xml(ISSUE_FILE)
 
-    parser = Parser('outputs/output_num0.xsd')
+    parser = Parser('../outputs/output_num0.xsd')
     text = parser.get_doc_text(EElement.TYPE)
     assert text == expected
