@@ -1,4 +1,4 @@
-import sys,os
+import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from src.template_model import *
 from src.issue_model import *
@@ -29,6 +29,6 @@ def test_insertion():
     expected = 'Kherson National Technical University'
     fill_template_xml(XML_FILE_NAME)
 
-    parser = Parser('../outputs/output_num0.xsd')
+    parser = Parser('outputs/output_num0.xsd')
     text = parser.get_doc_text(EElement.TYPE)
     assert text == expected
