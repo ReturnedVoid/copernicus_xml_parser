@@ -1,4 +1,4 @@
-XML_FILE_NAME = '../xmls/issues.xml'
+XML_FILE_NAME = 'xmls/issues.xml'
 
 
 class Root:
