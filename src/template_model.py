@@ -2,8 +2,8 @@ import re
 import xml.etree.ElementTree as eT
 from enum import Enum
 
-XML_FILE_NAME = '../xmls/ic-import.xsd'
-TEMP_FILE_NAME = '../xmls/temp.xsd'
+XML_FILE_NAME = 'xmls/ic-import.xsd'
+TEMP_FILE_NAME = 'xmls/temp.xsd'
 
 
 class ESimpleType(Enum):
