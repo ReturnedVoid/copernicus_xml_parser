@@ -208,9 +208,8 @@ class Parser:
         # delete unnecessary xs schema
         xml_file = re.sub('xs:', '', xml)
 
-        file = open(TEMP_FILE_NAME, 'w', encoding='utf-8')
-        file.write(xml_file)
-        file.close()
+        with open(TEMP_FILE_NAME, 'w', encoding='utf-8') as temp_file:
+            temp_file.write(xml_file)
 
     def get_doc_text(self, tag, enumeration_value=None):
         """Returns documentation of given fragment
