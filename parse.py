@@ -6,7 +6,7 @@ from src.issue_model import XML_FILE_NAME as ISSUE_FILE_NAME
 from colorama import init
 from colorama import Fore, Back, Style
 
-# init colorama
+#for colorama
 init()
 
 
