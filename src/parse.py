@@ -14,7 +14,8 @@ def verify_files_existence():
     try:
         open(TEMPLATE_FILE_NAME)
     except IOError:
-        print(Fore.RED + 'Critical error: file {} does not exist'.format(TEMPLATE_FILE_NAME))
+        print(
+            Fore.RED + 'Critical error: file {} does not exist'.format(TEMPLATE_FILE_NAME))
         file_not_exists_error = True
 
     try:
@@ -28,7 +29,11 @@ def verify_files_existence():
         sys.exit(0)
 
 
-if __name__ == '__main__':
+def main():
     verify_files_existence()
     fill_template_xml(ISSUE_FILE_NAME)
     input('Completed.')
+
+
+if __name__ == '__main__':
+    main()
