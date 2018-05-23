@@ -1,0 +1,6 @@
+/outputs
+/venv
+ic-import.xsd
+issues.xml
+*.pyc
+/.vscode
