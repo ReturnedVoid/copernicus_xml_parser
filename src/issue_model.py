@@ -1,4 +1,7 @@
-XML_FILE_NAME = 'xmls/issues.xml'
+import os
+
+
+XML_FILE_NAME = os.path.join(os.path.dirname(__file__), '..', 'issues.xml')
 
 
 class Root:

@@ -1,9 +1,11 @@
 import re
+import os
 import xml.etree.ElementTree as eT
 from enum import Enum
 
-XML_FILE_NAME = 'xmls/ic-import.xsd'
-TEMP_FILE_NAME = 'xmls/temp.xsd'
+
+XML_FILE_NAME = os.path.join(os.path.dirname(__file__), '..', 'ic-import.xsd')
+TEMP_FILE_NAME = os.path.join(os.path.dirname(__file__), '..', 'temp.xsd')
 
 
 class ESimpleType(Enum):
@@ -225,14 +227,17 @@ class Parser:
             AttributeError: if doc in given fragment was not found."""
         try:
             if type(tag) is ESimpleType:
-                simple_type = self._root.find('.//simpleType[@name="{}"]'.format(tag))
-                enumeration = simple_type.find('.//enumeration[@value="{}"]'.format(enumeration_value))
+                simple_type = self._root.find(
+                    './/simpleType[@name="{}"]'.format(tag))
+                enumeration = simple_type.find(
+                    './/enumeration[@value="{}"]'.format(enumeration_value))
                 annotation = enumeration.find('.//annotation')
                 doc = annotation.find('.//documentation')
                 return doc.text
             else:  # if its EElement
                 element = self._root.find('./element')
-                req_element = element.find('.//element[@name="{}"]'.format(tag))
+                req_element = element.find(
+                    './/element[@name="{}"]'.format(tag))
                 doc = req_element.find('.//documentation')
                 return doc.text
         except AttributeError:
@@ -250,14 +255,17 @@ class Parser:
             AttributeError: if doc in given fragment was not found."""
         try:
             if type(tag) is ESimpleType:
-                simple_type = self._root.find('.//simpleType[@name="{}"]'.format(tag))
-                enumeration = simple_type.find('.//enumeration[@value="{}"]'.format(enumeration_value))
+                simple_type = self._root.find(
+                    './/simpleType[@name="{}"]'.format(tag))
+                enumeration = simple_type.find(
+                    './/enumeration[@value="{}"]'.format(enumeration_value))
                 annotation = enumeration.getchildren()[0]
                 doc = annotation.getchildren()[0]
                 doc.text = text
             else:
                 element = self._root.find('./element')
-                req_element = element.find('.//element[@name="{}"]'.format(tag))
+                req_element = element.find(
+                    './/element[@name="{}"]'.format(tag))
                 doc = req_element.find('.//documentation')
                 doc.text = text
         except AttributeError:

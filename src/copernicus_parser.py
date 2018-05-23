@@ -1,8 +1,8 @@
-from src.template_model import Parser, EElement, TEMP_FILE_NAME
+from src.template_model import Parser, EElement, TEMP_FILE_NAME, ESimpleType, EEnumeration
 from src.issue_model import Root
 import os
 
-OUTPUT_DIR_NAME = 'outputs'
+OUTPUT_DIR_NAME = os.path.join(os.path.dirname(__file__), '..', 'outputs')
 
 
 def fill_template_xml(xml_file):
@@ -37,9 +37,12 @@ def fill_template_xml(xml_file):
 
                     author = article.get_authors()[z]
                     affiliation = author.get_eng_affiliation()
-                    parser.set_doc_text(EElement.TYPE, text=affiliation)
+                    parser.set_doc_text(
+                        ESimpleType.roleType, text=affiliation,
+                        enumeration_value=EEnumeration.AUTHOR)
 
-            file_name = 'outputs/output_num{}.xsd'.format(j)
+            file_name = os.path.join(os.path.dirname(
+                __file__), '..', 'outputs/output_num{}.xsd'.format(j))
             parser.write_xml_to_file(file_name)
 
     # Delete unnecessary temp file
